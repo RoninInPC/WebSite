@@ -20,53 +20,14 @@ import java.util.concurrent.FutureTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String Title = null;
-
-    private Runnable task_wainting_ = new Runnable() {
-        @Override
-        public void run() {
-            while (true) {
-                IsWaintingIntent();
-            }
-        }
-    };
-
-    protected void SendIntent(){
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-
-        sendIntent.putExtra(Intent.EXTRA_TEXT, Title);
-        sendIntent.setType("text/plain");
-        startActivity(sendIntent);
-    }
-
-    protected boolean IsWaintingIntent(){
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
-
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if ("text/plain".equals(type)) {
-
-                String request = intent.getStringExtra(Intent.EXTRA_TEXT);
-                if(request=="PLEASE_I_NEED_TITLE"){
-                    SendIntent();
-                    return true;
-                }
-
-            }
-        }
-        return false;
-    }
+    protected String Title = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new Thread(task_wainting_).start();
     }
-
     protected String GetTitleFromWebSite(String url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
         try{
@@ -87,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         new Thread(future).start();
         try {
             Title = future.get();
+            Intent intent = new Intent(this, WaitRequest.class);
+            intent.putExtra("Title",Title);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -96,4 +59,5 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("Title",Title);
         startActivity(intent);
     }
+
 }
