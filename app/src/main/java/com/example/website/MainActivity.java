@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         new Thread(future).start();
         try {
             Title = future.get();
-            Intent intent = new Intent(this, WaitRequest.class);
-            intent.putExtra("Title",Title);
+            //Intent intent = new Intent(this, WaitRequest.class);
+            //intent.putExtra("Title",Title);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
